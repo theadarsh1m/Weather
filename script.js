@@ -26,7 +26,6 @@ async function getWeather(apiUrl) {
   var data = await response.json();
   let city = document.querySelector("#city").value;
 
-
   if (data.cod != 200) {
     document.querySelector("#errorMessage").innerText =
       "Enter a valid city name";
@@ -46,7 +45,36 @@ async function getWeather(apiUrl) {
   weatherIcon.src =
     weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
 
+  await getAQI(data.coord.lat, data.coord.lon);
   await getPic(city);
+}
+
+async function getAQI(lat, lon) {
+  const aqiApiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${weatherApiKey}`;
+
+  const response = await fetch(aqiApiUrl);
+  const data = await response.json();
+
+  const aqiRating = getAQIRating(data.list[0].main.aqi);
+  document.querySelector("#aqi").innerText = aqiRating;
+  console.log(data);
+}
+
+function getAQIRating(aqi) {
+  switch (aqi) {
+    case 1:
+      return "Good";
+    case 2:
+      return "Fair";
+    case 3:
+      return "Moderate";
+    case 4:
+      return "Poor";
+    case 5:
+      return "Very Poor";
+    default:
+      return "Unknown";
+  }
 }
 
 async function getUserCoordinates() {
