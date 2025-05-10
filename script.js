@@ -9,16 +9,24 @@ let description = document.querySelector("#description");
 let weatherIcon = document.querySelector("#weatherIcon");
 
 const unsplashApiKey = "qDyNBAbAgWAA4Bd59Kup_bOQMNAJODQHNAvt_YelOHE";
+const weatherApiKey = `11efeb0579bec011f50442a3abb6b746`;
 
-async function getWeather(event) {
-  event.preventDefault();
-  let city = document.querySelector("#city").value;
+async function getWeatherByCity(city) {
+  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=en&units=metric&appid=${weatherApiKey}`;
+  return await getWeather(apiUrl);
+}
 
-  const apiKey = `11efeb0579bec011f50442a3abb6b746`;
-  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=en&units=metric&appid=${apiKey}`;
+async function getWeatherByCoordinates(lat, lon) {
+  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&lang=en&units=metric&appid=${weatherApiKey}`;
+  return await getWeather(apiUrl);
+}
 
+async function getWeather(apiUrl) {
   var response = await fetch(apiUrl);
   var data = await response.json();
+  let city = document.querySelector("#city").value;
+
+
   if (data.cod != 200) {
     document.querySelector("#errorMessage").innerText =
       "Enter a valid city name";
@@ -41,6 +49,25 @@ async function getWeather(event) {
   await getPic(city);
 }
 
+async function getUserCoordinates() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async function (position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        // console.log("Latitude:", latitude);
+        // console.log("Longitude:", longitude);
+        await getWeatherByCoordinates(latitude, longitude);
+      },
+      async function (error) {
+        console.error("Error getting location:", error.message);
+      }
+    );
+  } else {
+    console.log("Geolocation is not supported by this browser.");
+  }
+}
+
 async function getPic(city) {
   const picUrl = `https://api.unsplash.com/search/photos?query=${city}&client_id=${unsplashApiKey}`;
 
@@ -48,7 +75,8 @@ async function getPic(city) {
   const data = await response.json();
 
   if (data.results.length > 0) {
-    const imgUrl = data.results[8].urls.regular;
+    const randomIndex = Math.floor(Math.random() * data.results.length);
+    const imgUrl = data.results[randomIndex].urls.regular;
     document.querySelector(
       ".weather-bg"
     ).style.backgroundImage = `url(${imgUrl})`;
@@ -57,6 +85,10 @@ async function getPic(city) {
   console.log(data);
 }
 
-btn.addEventListener("click", getWeather);
+btn.addEventListener("click", (event) => {
+  event.preventDefault();
+  let city = document.querySelector("#city").value;
+  getWeatherByCity(city);
+});
 
-// getWeather();
+window.onload = getUserCoordinates();
