@@ -7,6 +7,9 @@ let lon = document.querySelector("#lon");
 let lat = document.querySelector("#lat");
 let description = document.querySelector("#description");
 let weatherIcon = document.querySelector("#weatherIcon");
+let tempToggle = document.querySelector("#tempToggle");
+
+let isCelsius = true;
 
 const unsplashApiKey = "qDyNBAbAgWAA4Bd59Kup_bOQMNAJODQHNAvt_YelOHE";
 const weatherApiKey = `11efeb0579bec011f50442a3abb6b746`;
@@ -117,6 +120,26 @@ btn.addEventListener("click", (event) => {
   event.preventDefault();
   let city = document.querySelector("#city").value;
   getWeatherByCity(city);
+});
+
+function updateTemperature (currentTemp) {
+  if(isCelsius) {
+    isCelsius = !isCelsius;
+    const tempInFahrenheit = (currentTemp * 9/5) + 32;
+    temperature.innerText = `${tempInFahrenheit.toFixed(2)}°F`;
+    tempToggle.innerText = "Switch to °C";
+  } else {
+    isCelsius = !isCelsius;
+    const tempInCelsius = (currentTemp -32) * 5/9;
+    temperature.innerText = `${tempInCelsius.toFixed(2)}°C`;
+    tempToggle.innerText = "Switch to °F";
+  }
+}
+
+tempToggle.addEventListener("click", () => {
+  // isCelsius = !isCelsius;
+  let currentTemp = parseFloat(temperature.innerText);
+  updateTemperature(currentTemp);
 });
 
 window.onload = getUserCoordinates();
