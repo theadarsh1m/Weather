@@ -19,6 +19,13 @@ async function getWeather(event) {
 
   var response = await fetch(apiUrl);
   var data = await response.json();
+  if (data.cod != 200) {
+    document.querySelector("#errorMessage").innerText =
+      "Enter a valid city name";
+    document.querySelector("#errorMessage").style.display = "block";
+    return;
+  }
+  document.querySelector("#errorMessage").style.display = "none";
   //   console.log(data);
 
   cityName.innerText = data.name;
@@ -42,7 +49,9 @@ async function getPic(city) {
 
   if (data.results.length > 0) {
     const imgUrl = data.results[8].urls.regular;
-    document.querySelector(".weather-bg").style.backgroundImage = `url(${imgUrl})`;
+    document.querySelector(
+      ".weather-bg"
+    ).style.backgroundImage = `url(${imgUrl})`;
   }
 
   console.log(data);
