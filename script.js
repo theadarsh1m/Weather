@@ -28,6 +28,7 @@ async function getWeather(apiUrl) {
   var response = await fetch(apiUrl);
   var data = await response.json();
   let city = document.querySelector("#city").value;
+  isCelsius = true;
 
   if (data.cod != 200) {
     document.querySelector("#errorMessage").innerText =
