@@ -8,6 +8,8 @@ let lat = document.querySelector("#lat");
 let description = document.querySelector("#description");
 let weatherIcon = document.querySelector("#weatherIcon");
 
+const unsplashApiKey = "qDyNBAbAgWAA4Bd59Kup_bOQMNAJODQHNAvt_YelOHE";
+
 async function getWeather(event) {
   event.preventDefault();
   let city = document.querySelector("#city").value;
@@ -17,7 +19,7 @@ async function getWeather(event) {
 
   var response = await fetch(apiUrl);
   var data = await response.json();
-  console.log(data);
+  //   console.log(data);
 
   cityName.innerText = data.name;
   temperature.innerText = `${data.main.temp}°C`;
@@ -25,9 +27,25 @@ async function getWeather(event) {
   humidity.innerHTML = `${data.main.humidity}%`;
   lon.innerText = `${data.coord.lon}`;
   lat.innerText = `${data.coord.lat}`;
-  description.innerText = `${data.weather[0].description}`
-  weatherIcon.src = weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+  description.innerText = `${data.weather[0].description}`;
+  weatherIcon.src =
+    weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
 
+  await getPic(city);
+}
+
+async function getPic(city) {
+  const picUrl = `https://api.unsplash.com/search/photos?query=${city}&client_id=${unsplashApiKey}`;
+
+  const response = await fetch(picUrl);
+  const data = await response.json();
+
+  if (data.results.length > 0) {
+    const imgUrl = data.results[8].urls.regular;
+    document.querySelector(".weather-bg").style.backgroundImage = `url(${imgUrl})`;
+  }
+
+  console.log(data);
 }
 
 btn.addEventListener("click", getWeather);
