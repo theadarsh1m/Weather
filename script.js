@@ -186,4 +186,11 @@ cityInput.addEventListener("input", async () => {
   displaySuggestions(suggestions);
 });
 
+document.addEventListener("click", (event)=>{
+  const isClickedSuggestion = suggestionsList.contains(event.target);
+  if(!isClickedSuggestion) {
+    suggestionsList.style.display = "none";
+  }
+});
+
 window.onload = getUserCoordinates();
