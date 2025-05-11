@@ -12,9 +12,10 @@
   <div class="container-fluid weather-bg">
     <div class="overlay">
       <div class="d-flex justify-content-center pt-5">
-        <form class="weather-form d-flex gap-2" id="weatherForm">
+        <form class="weather-form d-flex gap-2 position-relative" id="weatherForm">
           <input type="text" id="city" class="form-control" placeholder="City" required />
           <button class="btn btn-dark" type="submit">Go</button>
+          <ul id="suggestions" class="list-group mt-1" style="display: none;"></ul>
         </form>
       </div>
 

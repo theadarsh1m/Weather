@@ -8,11 +8,14 @@ let lat = document.querySelector("#lat");
 let description = document.querySelector("#description");
 let weatherIcon = document.querySelector("#weatherIcon");
 let tempToggle = document.querySelector("#tempToggle");
+const cityInput = document.querySelector("#city");
+const suggestionsList = document.querySelector("#suggestions");
 
 let isCelsius = true;
 
 const unsplashApiKey = "qDyNBAbAgWAA4Bd59Kup_bOQMNAJODQHNAvt_YelOHE";
 const weatherApiKey = `11efeb0579bec011f50442a3abb6b746`;
+const locationIqApiKey = `pk.970ddc983240310cf27c31e25aed4b04`;
 
 async function getWeatherByCity(city) {
   const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=en&units=metric&appid=${weatherApiKey}`;
@@ -61,7 +64,7 @@ async function getAQI(lat, lon) {
 
   const aqiRating = getAQIRating(data.list[0].main.aqi);
   document.querySelector("#aqi").innerText = aqiRating;
-  console.log(data);
+  // console.log(data);
 }
 
 function getAQIRating(aqi) {
@@ -114,33 +117,73 @@ async function getPic(city) {
     ).style.backgroundImage = `url(${imgUrl})`;
   }
 
-  console.log(data);
+  // console.log(data);
+}
+
+async function getCitySuggestions(query) {
+  const apiUrl = `https://api.locationiq.com/v1/autocomplete?key=${locationIqApiKey}&q=${query}&limit=5&dedupe=1&`;
+  const response = await fetch(apiUrl);
+  const data = await response.json();
+  return data || [];
 }
 
 btn.addEventListener("click", (event) => {
   event.preventDefault();
   let city = document.querySelector("#city").value;
   getWeatherByCity(city);
+  suggestionsList.style.display = "none";
 });
 
-function updateTemperature (currentTemp) {
-  if(isCelsius) {
+function updateTemperature(currentTemp) {
+  if (isCelsius) {
     isCelsius = !isCelsius;
-    const tempInFahrenheit = (currentTemp * 9/5) + 32;
+    const tempInFahrenheit = (currentTemp * 9) / 5 + 32;
     temperature.innerText = `${tempInFahrenheit.toFixed(2)}°F`;
     tempToggle.innerText = "Switch to °C";
   } else {
     isCelsius = !isCelsius;
-    const tempInCelsius = (currentTemp -32) * 5/9;
+    const tempInCelsius = ((currentTemp - 32) * 5) / 9;
     temperature.innerText = `${tempInCelsius.toFixed(2)}°C`;
     tempToggle.innerText = "Switch to °F";
   }
+}
+
+function displaySuggestions(suggestions) {
+  suggestionsList.innerHTML = "";
+  if (suggestions.length == 0) {
+    suggestionsList.style.display = "none";
+    return;
+  }
+
+  const threeSuggestions = suggestions.slice(0, 3);
+  threeSuggestions.forEach((suggestion) => {
+    const li = document.createElement("li");
+    li.className = "list-group-item list-group-item-action";
+    li.style.padding = "0.25rem 0.5rem";
+    li.textContent = suggestion.display_name.split(",")[0];
+    li.addEventListener("click", () => {
+      cityInput.value = suggestion.display_name.split(",")[0];
+      suggestionsList.style.display = "none";
+    });
+    suggestionsList.appendChild(li);
+  });
+  suggestionsList.style.display = "block";
 }
 
 tempToggle.addEventListener("click", () => {
   // isCelsius = !isCelsius;
   let currentTemp = parseFloat(temperature.innerText);
   updateTemperature(currentTemp);
+});
+
+cityInput.addEventListener("input", async () => {
+  let query = cityInput.value;
+  if (query === "") {
+    suggestionsList.style.display = "none";
+    return;
+  }
+  const suggestions = await getCitySuggestions(query);
+  displaySuggestions(suggestions);
 });
 
 window.onload = getUserCoordinates();

@@ -43,6 +43,25 @@ html {
   text-align: right;
   margin-top: 2rem;
   &:hover {
-    cursor:pointer;
+    cursor: pointer;
+  }
+}
+
+#suggestions {
+  position: absolute;
+  top: 100%;
+  z-index: 1000;
+  width: 80.5%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.list-group-item {
+  cursor: pointer;
+  &:hover {
+    background-color: #f0f0f0;
   }
 }
