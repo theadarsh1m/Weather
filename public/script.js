@@ -13,17 +13,13 @@ const suggestionsList = document.querySelector("#suggestions");
 
 let isCelsius = true;
 
-const unsplashApiKey = "qDyNBAbAgWAA4Bd59Kup_bOQMNAJODQHNAvt_YelOHE";
-const weatherApiKey = `11efeb0579bec011f50442a3abb6b746`;
-const locationIqApiKey = `pk.970ddc983240310cf27c31e25aed4b04`;
-
 async function getWeatherByCity(city) {
-  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=en&units=metric&appid=${weatherApiKey}`;
+  const apiUrl = `/api/weather?city=${city}`;
   return await getWeather(apiUrl);
 }
 
 async function getWeatherByCoordinates(lat, lon) {
-  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&lang=en&units=metric&appid=${weatherApiKey}`;
+  const apiUrl = `/api/weather?lat=${lat}&lon=${lon}`; // Only if you update backend to handle this too
   return await getWeather(apiUrl);
 }
 
@@ -57,14 +53,16 @@ async function getWeather(apiUrl) {
 }
 
 async function getAQI(lat, lon) {
-  const aqiApiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${weatherApiKey}`;
-
+  const aqiApiUrl = `/api/aqi?lat=${lat}&lon=${lon}`;
   const response = await fetch(aqiApiUrl);
   const data = await response.json();
 
-  const aqiRating = getAQIRating(data.list[0].main.aqi);
-  document.querySelector("#aqi").innerText = aqiRating;
-  // console.log(data);
+  if (data.list && data.list.length > 0) {
+    const aqiRating = getAQIRating(data.list[0].main.aqi);
+    document.querySelector("#aqi").innerText = aqiRating;
+  } else {
+    document.querySelector("#aqi").innerText = "AQI data unavailable";
+  }
 }
 
 function getAQIRating(aqi) {
@@ -104,7 +102,7 @@ async function getUserCoordinates() {
 }
 
 async function getPic(city) {
-  const picUrl = `https://api.unsplash.com/search/photos?query=${city}&client_id=${unsplashApiKey}`;
+  const picUrl = `/api/unsplash?city=${city}`;
 
   const response = await fetch(picUrl);
   const data = await response.json();
@@ -112,16 +110,12 @@ async function getPic(city) {
   if (data.results.length > 0) {
     const randomIndex = Math.floor(Math.random() * data.results.length);
     const imgUrl = data.results[randomIndex].urls.regular;
-    document.querySelector(
-      ".weather-bg"
-    ).style.backgroundImage = `url(${imgUrl})`;
+    document.querySelector(".weather-bg").style.backgroundImage = `url(${imgUrl})`;
   }
-
-  // console.log(data);
 }
 
 async function getCitySuggestions(query) {
-  const apiUrl = `https://api.locationiq.com/v1/autocomplete?key=${locationIqApiKey}&q=${query}&limit=5&dedupe=1&`;
+  const apiUrl = `/api/location?q=${query}`;
   const response = await fetch(apiUrl);
   const data = await response.json();
   return data || [];
