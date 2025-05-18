@@ -144,7 +144,9 @@ function updateTemperature(currentTemp) {
 
 function displaySuggestions(suggestions) {
   suggestionsList.innerHTML = "";
-  if (suggestions.length == 0) {
+  
+  // Check if suggestions is an array
+  if (!Array.isArray(suggestions) || suggestions.length === 0) {
     suggestionsList.style.display = "none";
     return;
   }
@@ -162,6 +164,25 @@ function displaySuggestions(suggestions) {
     suggestionsList.appendChild(li);
   });
   suggestionsList.style.display = "block";
+}
+
+// Also update the getCitySuggestions function
+async function getCitySuggestions(query) {
+  try {
+    const apiUrl = `/api/location?q=${query}`;
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    
+    // Return empty array if there's an error or no data
+    if (!response.ok || !Array.isArray(data)) {
+      return [];
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Error fetching city suggestions:', error);
+    return [];
+  }
 }
 
 tempToggle.addEventListener("click", () => {
