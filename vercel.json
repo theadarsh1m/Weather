@@ -1,19 +1,22 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server.js"
+  "functions": {
+    "api/weather.js": {
+      "maxDuration": 10
     },
+    "api/unsplash.js": {
+      "maxDuration": 10
+    },
+    "api/location.js": {
+      "maxDuration": 10
+    },
+    "api/aqi.js": {
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/public/index.html"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     }
   ]
 }

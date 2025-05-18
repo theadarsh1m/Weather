@@ -1,11 +1,11 @@
+
 {
   "name": "weather",
   "version": "1.0.0",
   "description": "A sleek, responsive weather app that shows real-time weather conditions, AQI, and a beautiful city-themed background powered by the Unsplash API.",
-  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "dev": "vercel dev",
+    "build": "echo 'Static build complete'"
   },
   "repository": {
     "type": "git",
@@ -17,11 +17,5 @@
   "bugs": {
     "url": "https://github.com/theadarsh1m/Weather/issues"
   },
-  "homepage": "https://github.com/theadarsh1m/Weather#readme",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "node-fetch": "^2.7.0"
-  }
+  "homepage": "https://github.com/theadarsh1m/Weather#readme"
 }
