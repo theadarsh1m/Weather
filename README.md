@@ -9,7 +9,7 @@ A sleek, responsive weather app that shows real-time weather conditions, AQI, an
 > 🔍 Enter any city name — the background updates to display a famous place or landmark from that city!
 
 ![Weather App Demo](your-demo-screenshot-url)
-> 🔗 **[Live Demo](https://theadarsh1m.github.io/Weather/)**  
+> 🔗 **[Live Demo]([https://theadarsh1m.github.io/Weather/](https://weather-pfas.onrender.com))**  using server
 
 ---
 
